@@ -1,5 +1,5 @@
 {
-  "originHash" : "58e144f303cdf20eb585accd56021db6d6227b0daa22e3dce824c0eadbdf014a",
+  "originHash" : "806722be9ebbabe0672da423d9b92cf77c0539bd75b6e0af012ba19fe05f1b4b",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/techouse/qs-swift.git",
       "state" : {
-        "revision" : "6991d146954d9353e63ed0962dfbb7532fbcbd4f",
-        "version" : "1.3.6"
+        "revision" : "05ec357475a1c9c23e70d78d38002a52787d7d33",
+        "version" : "1.4.0"
       }
     },
     {

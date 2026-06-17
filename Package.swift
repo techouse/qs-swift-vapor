@@ -14,7 +14,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/techouse/qs-swift.git", from: "1.3.6"),
+        .package(url: "https://github.com/techouse/qs-swift.git", from: "1.4.0"),
         .package(url: "https://github.com/vapor/vapor.git", from: "4.121.4"),
     ],
     targets: [
