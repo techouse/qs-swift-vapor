@@ -106,7 +106,7 @@ Please include relevant logs:
 - OS: <!-- e.g., macOS 15.5 / Ubuntu 24.04 -->
 - Swift: output of `swift --version`
 - Xcode: <!-- e.g., 16.4, if applicable -->
-- SwiftPM: <!-- e.g., 6.1, or "via Xcode" -->
+- SwiftPM: <!-- e.g., 6.2, or "via Xcode" -->
 - QsSwiftVapor version: <!-- e.g., 0.1.0 -->
 - QsSwift version: <!-- e.g., 1.4.0 -->
 - Vapor version: <!-- e.g., 4.121.4 -->
