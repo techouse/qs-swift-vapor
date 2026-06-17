@@ -1,5 +1,7 @@
 # QsSwiftVapor
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2fb89aed915d4c4ea82be66cdc70de47)](https://app.codacy.com/gh/techouse/qs-swift-vapor?utm_source=github.com&utm_medium=referral&utm_content=techouse/qs-swift-vapor&utm_campaign=Badge_Grade)
+
 Small Vapor integration for [QsSwift](https://github.com/techouse/qs-swift).
 
 `QsSwiftVapor` adds one request helper that parses the request's encoded query string with QsSwift, bypassing Vapor's
