@@ -27,9 +27,6 @@ jobs:
       matrix:
         include:
           - runner: macos-15
-            xcode: '16.2'
-            swift: '6.0'
-          - runner: macos-15
             xcode: '16.4'
             swift: '6.1'
           - runner: macos-26
@@ -94,7 +91,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - swift: '6.0'
           - swift: '6.1'
           - swift: '6.2'
 
