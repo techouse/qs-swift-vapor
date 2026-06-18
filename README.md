@@ -17,7 +17,7 @@ typed query container when you need qs-compatible nested query-string behavior.
 Add the package to your SwiftPM dependencies:
 
 ```swift
-.package(url: "https://github.com/techouse/QsSwiftVapor.git", from: "0.1.0")
+.package(url: "https://github.com/techouse/QsSwiftVapor.git", from: "1.0.0")
 ```
 
 Then add the product to your Vapor target:
