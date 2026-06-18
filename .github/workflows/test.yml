@@ -41,13 +41,6 @@ jobs:
           xcodebuild -version
           swift --version
 
-      - name: Install SwiftLint
-        run: |
-          set -euo pipefail
-          brew update
-          brew install swiftlint
-          swiftlint version
-
       - name: Run SwiftLint
         run: |
           set -euo pipefail
