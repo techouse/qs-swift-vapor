@@ -14,6 +14,10 @@ concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  XCODE_VERSION: '26.4'
+  SWIFT_VERSION: '6.3'
+
 jobs:
   analyze:
     permissions:
