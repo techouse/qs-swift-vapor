@@ -1,0 +1,147 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos-tests:
+    permissions:
+      contents: read
+    name: ${{ format('Swift tests ({0}, Xcode {1}, Swift {2})', matrix.runner, matrix.xcode, matrix.swift) }}
+    timeout-minutes: 30
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            xcode: '16.2'
+            swift: '6.0'
+          - runner: macos-15
+            xcode: '16.4'
+            swift: '6.1'
+          - runner: macos-26
+            xcode: '26.2'
+            swift: '6.2'
+          - runner: macos-26
+            xcode: '26.4'
+            swift: '6.3'
+
+    env:
+      XCODE_VERSION: ${{ matrix.xcode }}
+      SWIFT_VERSION: ${{ matrix.swift }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode ${{ env.XCODE_VERSION }}
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+
+      - name: Show Xcode and Swift versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Compute Package.resolved hash
+        run: echo "PACKAGE_RESOLVED_HASH=$(git hash-object Package.resolved 2>/dev/null || echo none)" >> "$GITHUB_ENV"
+
+      - name: Cache SwiftPM artifacts
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.swiftpm
+            .build
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-swift-${{ env.SWIFT_VERSION }}-${{ env.PACKAGE_RESOLVED_HASH }}
+          restore-keys: |
+            spm-${{ runner.os }}-swift-${{ env.SWIFT_VERSION }}-
+
+      - name: Run tests with coverage
+        env:
+          SWIFT_DETERMINISTIC_HASHING: 1
+        run: bash scripts/coverage.sh
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v7
+        with:
+          files: coverage/info.lcov
+          flags: swift,${{ matrix.runner }},xcode-${{ env.XCODE_VERSION }},swift-${{ env.SWIFT_VERSION }}
+          name: QsSwiftVapor-${{ matrix.runner }}-xcode-${{ env.XCODE_VERSION }}-swift-${{ env.SWIFT_VERSION }}
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  linux-tests:
+    permissions:
+      contents: read
+    name: ${{ format('Swift tests (Ubuntu, Swift {0})', matrix.swift) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - swift: '6.0'
+          - swift: '6.1'
+          - swift: '6.2'
+
+    env:
+      SWIFT_VERSION: ${{ matrix.swift }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Compute Package.resolved hash
+        run: echo "PACKAGE_RESOLVED_HASH=$(git hash-object Package.resolved 2>/dev/null || echo none)" >> "$GITHUB_ENV"
+
+      - name: Setup Swift ${{ env.SWIFT_VERSION }}
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: ${{ env.SWIFT_VERSION }}
+
+      - name: Show Swift and OS versions
+        run: |
+          swift --version
+          uname -a
+
+      - name: Cache SwiftPM artifacts
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.swiftpm
+            .build
+            ~/.cache/org.swift.swiftpm
+          key: spm-${{ runner.os }}-swift-${{ env.SWIFT_VERSION }}-${{ env.PACKAGE_RESOLVED_HASH }}
+          restore-keys: |
+            spm-${{ runner.os }}-swift-${{ env.SWIFT_VERSION }}-
+
+      - name: Build tests
+        env:
+          SWIFT_DETERMINISTIC_HASHING: 1
+        run: swift build -c debug --build-tests
+
+      - name: Run tests
+        env:
+          SWIFT_DETERMINISTIC_HASHING: 1
+        run: swift test

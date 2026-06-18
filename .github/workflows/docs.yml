@@ -1,0 +1,91 @@
+name: Docs
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.4'
+
+      - name: Generate docs
+        env:
+          OUT: 'docs'
+          REPO_NAME: 'qs-swift-vapor'
+          TARGET: 'QsSwiftVapor'
+          SUBDIR: 'qsswiftvapor'
+        run: |
+          set -euo pipefail
+
+          swift --version
+          swift package --version
+          swift package resolve
+
+          rm -rf "${OUT}"
+          mkdir -p "${OUT}/${SUBDIR}"
+
+          if swift package --disable-sandbox generate-documentation --help >/dev/null 2>&1; then
+            swift package \
+              --disable-sandbox \
+              --allow-writing-to-directory "${OUT}/${SUBDIR}" \
+              generate-documentation \
+              --target "${TARGET}" \
+              --output-path "${OUT}/${SUBDIR}" \
+              --transform-for-static-hosting \
+              --hosting-base-path "${REPO_NAME}/${SUBDIR}"
+          else
+            swift package \
+              --disable-sandbox \
+              --allow-writing-to-directory "${OUT}/${SUBDIR}" \
+              preview-documentation \
+              --target "${TARGET}" \
+              --output-path "${OUT}/${SUBDIR}" \
+              --transform-for-static-hosting \
+              --hosting-base-path "${REPO_NAME}/${SUBDIR}"
+          fi
+
+          test -f "${OUT}/${SUBDIR}/index/index.json"
+          touch "${OUT}/.nojekyll"
+
+          cat > "${OUT}/index.html" <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>QsSwiftVapor Documentation</title>
+          <meta http-equiv="refresh" content="0; url=./qsswiftvapor/documentation/qsswiftvapor/">
+          <a href="./qsswiftvapor/documentation/qsswiftvapor/">QsSwiftVapor documentation</a>
+          HTML
+
+          cat > "${OUT}/404.html" <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>Not Found</title>
+          <h1>404 - Not Found</h1>
+          <p><a href="./">Back to documentation home</a></p>
+          HTML
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: docs
+          force_orphan: true

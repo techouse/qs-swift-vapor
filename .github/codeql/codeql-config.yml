@@ -1,0 +1,4 @@
+name: qs-swift-vapor
+paths-ignore:
+  - .build/**
+  - Tests/**
