@@ -2,6 +2,9 @@
 
 Small Vapor integration for [QsSwift](https://github.com/techouse/qs-swift).
 
+[![SwiftPM version](https://img.shields.io/github/v/release/techouse/qs-swift-vapor?logo=swift&label=SwiftPM)](https://github.com/techouse/qs-swift-vapor/releases/latest)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftechouse%2Fqs-swift-vapor%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/techouse/qs-swift-vapor)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftechouse%2Fqs-swift-vapor%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/techouse/qs-swift-vapor)
 [![License](https://img.shields.io/github/license/techouse/qs-swift-vapor)](LICENSE)
 [![Test](https://github.com/techouse/qs-swift-vapor/actions/workflows/test.yml/badge.svg)](https://github.com/techouse/qs-swift-vapor/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/techouse/qs-swift-vapor/graph/badge.svg?token=kTTCSYGcej)](https://codecov.io/gh/techouse/qs-swift-vapor)
